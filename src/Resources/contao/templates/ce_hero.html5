@@ -1,0 +1,49 @@
+<div class="<?= $this->class ?> block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+
+<div class="hero__content">
+  <div class="hero__text">
+    <?php if ($this->headline): ?><<?= $this->hl ?>  class="headline"><?= $this->headline ?></<?= $this->hl ?>><?php endif; ?>
+
+    <?php if ($this->addText): ?>
+      <div class="description"><?= $this->text ?></div>
+    <?php endif; ?>
+
+    <?php if ($this->urlPrimary || $this->urlSecondary): ?>
+      <div class="hero__links">
+        <?php if ($this->urlPrimary): ?>
+          <a href="<?= $this->urlPrimary ?>" class="<?= $this->linkClassPrimary ?>" title="<?= $this->titleTextPrimary ?>"<?= $this->targetPrimary ?><?= $this->relPrimary ?>><?= $this->linkTitlePrimary ?></a>
+        <?php endif; ?>
+
+        <?php if ($this->urlSecondary): ?>
+          <a href="<?= $this->urlSecondary ?>" class="<?= $this->linkClassSecondary ?>" title="<?= $this->titleTextSecondary ?>"<?= $this->targetSecondary ?><?= $this->relSecondary ?>><?= $this->linkTitleSecondary ?></a>
+        <?php endif; ?>
+      </div>
+    <?php endif; ?>
+  </div>
+
+  <?php if ($this->addImage): ?>
+    <figure class="hero__image<?= $this->floatClass ?>"<?php if ($this->margin): ?> style="<?= $this->margin ?>"<?php endif; ?>>
+
+      <?php if ($this->href): ?>
+        <a href="<?= $this->href ?>"<?php if ($this->linkTitle): ?> title="<?= $this->linkTitle ?>"<?php endif; ?><?= $this->attributes ?>>
+      <?php endif; ?>
+
+      <?php $this->insert('picture_default', $this->picture); ?>
+
+      <?php if ($this->href): ?>
+        </a>
+      <?php endif; ?>
+
+      <?php if ($this->caption): ?>
+        <figcaption class="caption"><?= $this->caption ?></figcaption>
+      <?php endif; ?>
+
+    </figure>
+  <?php endif; ?>
+</div>
+
+<figure class="hero__background">
+  <?php $this->insert('picture_default', $this->heroBackground->picture); ?>
+</figure>
+
+</div>

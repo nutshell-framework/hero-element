@@ -1,0 +1,38 @@
+{
+  "name": "nutshell-framework/hero-element",
+  "description": "Use a Hero-Element in Contao",
+  "keywords": [
+    "contao"
+  ],
+  "type": "contao-bundle",
+  "homepage": "https://github.com/nutshell-framework/hero-element",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Erdmann & Freunde - Dennis Erdmann",
+      "homepage": "http://erdmann-freunde.de",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "moin@erdmann-freunde.de",
+    "issues": "https://github.com/nutshell-framework/hero-element/issues",
+    "source": "https://github.com/nutshell-framework/hero-element"
+  },
+  "require": {
+    "php": ">=5.6",
+    "contao/core-bundle": "^4.10",
+    "symfony/http-kernel": "^3.3 || ^4.0 || ^5.0"
+  },
+  "require-dev": {
+    "contao/manager-plugin": "~2.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Nutshell\\HeroElement\\": "src/"
+    }
+  },
+  "extra": {
+    "contao-manager-plugin": "Nutshell\\HeroElement\\ContaoManager\\Plugin"
+  }
+}
