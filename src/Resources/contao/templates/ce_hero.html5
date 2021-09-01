@@ -2,7 +2,7 @@
 
 <div class="hero__content">
   <div class="hero__text">
-    <?php if ($this->headline): ?><<?= $this->hl ?>  class="headline"><?= $this->headline ?></<?= $this->hl ?>><?php endif; ?>
+    <?php if ($this->headline): ?><<?= $this->hl ?>  class="hero__headline"><?= $this->headline ?></<?= $this->hl ?>><?php endif; ?>
 
     <?php if ($this->addText): ?>
       <div class="description"><?= $this->text ?></div>
