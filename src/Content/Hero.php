@@ -18,8 +18,6 @@ use Contao\Config;
 use Contao\ContentElement;
 use Contao\FilesModel;
 use Contao\StringUtil;
-use Contao\Validator;
-
 
 class Hero extends ContentElement
 {
@@ -54,16 +52,14 @@ class Hero extends ContentElement
         $this->Template->text = StringUtil::encodeEmail($this->text);
         $this->Template->addImage = false;
 
-        
         // Add an content image
         if ($this->addImage && $this->singleSRC) {
             $objModel = FilesModel::findByUuid($this->singleSRC);
 
-            
             if (is_file(TL_ROOT.'/'.$objModel->path)) {
                 $this->singleSRC = $objModel->path;
-                
-                static::addImageToTemplate($this->Template,  [
+
+                static::addImageToTemplate($this->Template, [
                     'singleSRC' => $objModel->path,
                     'size' => $size,
                 ], null, null, $objModel);
@@ -78,7 +74,7 @@ class Hero extends ContentElement
                 $this->Template->heroImage = $objModel->path;
 
                 $image = new \stdClass();
-                static::addImageToTemplate($image,  [
+                static::addImageToTemplate($image, [
                     'singleSRC' => $objModel->path,
                     'size' => $heroSize,
                 ], null, null, $objModel);
@@ -86,7 +82,6 @@ class Hero extends ContentElement
                 $this->Template->heroBackground = $image;
             }
         }
-
 
         $this->Template->targetPrimary = '';
         $this->Template->relPrimary = '';

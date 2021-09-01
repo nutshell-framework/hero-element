@@ -5,7 +5,7 @@
     <?php if ($this->headline): ?><<?= $this->hl ?>  class="hero__headline"><?= $this->headline ?></<?= $this->hl ?>><?php endif; ?>
 
     <?php if ($this->addText): ?>
-      <div class="description"><?= $this->text ?></div>
+      <div class="hero__description"><?= $this->text ?></div>
     <?php endif; ?>
 
     <?php if ($this->urlPrimary || $this->urlSecondary): ?>
