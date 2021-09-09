@@ -61,12 +61,12 @@ class Hero extends ContentElement
 
                 static::addImageToTemplate($this->Template, [
                     'singleSRC' => $objModel->path,
-                    'size' => $size,
+                    'size' => $this->size,
                 ], null, null, $objModel);
             }
         }
 
-        // Add an content image
+        // Add an background image
         if ($this->heroBackgroundImage) {
             $objModel = FilesModel::findByUuid($this->heroBackgroundImage);
 
@@ -76,7 +76,7 @@ class Hero extends ContentElement
                 $image = new \stdClass();
                 static::addImageToTemplate($image, [
                     'singleSRC' => $objModel->path,
-                    'size' => $heroSize,
+                    'size' => $this->heroSize,
                 ], null, null, $objModel);
 
                 $this->Template->heroBackground = $image;
