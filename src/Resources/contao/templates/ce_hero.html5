@@ -42,8 +42,10 @@
   <?php endif; ?>
 </div>
 
-<figure class="hero__background">
-  <?php $this->insert('picture_default', $this->heroBackground->picture); ?>
-</figure>
+  <?php if ($this->addBackgroundImage): ?>
+    <figure class="hero__background">
+      <?php $this->insert('picture_default', $this->heroBackground->picture); ?>
+    </figure>
+  <?php endif; ?>
 
 </div>
