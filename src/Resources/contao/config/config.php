@@ -17,7 +17,7 @@ use Nutshell\HeroElement\Content\Hero;
 /*
  * EuF Hero ContentElement
  */
-Contao\ArrayUtil::arrayInsert((
+Contao\ArrayUtil::arrayInsert(
     $GLOBALS['TL_CTE']['media'],
     4,
     [
