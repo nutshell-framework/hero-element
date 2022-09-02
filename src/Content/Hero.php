@@ -18,6 +18,8 @@ use Contao\Config;
 use Contao\ContentElement;
 use Contao\FilesModel;
 use Contao\StringUtil;
+use Contao\System;
+use Contao\FrontendTemplate;
 
 class Hero extends ContentElement
 {
@@ -33,20 +35,10 @@ class Hero extends ContentElement
      */
     protected function compile()
     {
-        /* @var \PageModel $objPage */
-        global $objPage;
-
-        // Clean the RTE output
-        if ('xhtml' === $objPage->outputFormat) {
-            $this->text = StringUtil::toXhtml($this->text);
-        } else {
-            $this->text = StringUtil::toHtml5($this->text);
-        }
-
         // Add the static files URL to images
-        if (TL_FILES_URL) {
-            $path = Config::get('uploadPath').'/';
-            $this->text = str_replace(' src="'.$path, ' src="'.TL_FILES_URL.$path, $this->text);
+        if ($staticUrl = System::getContainer()->get('contao.assets.files_context')->getStaticUrl()) {
+            $path = Config::get('uploadPath') . '/';
+            $this->text = str_replace(' src="' . $path, ' src="' . $staticUrl . $path, $this->text);
         }
 
         $this->Template->text = StringUtil::encodeEmail($this->text);
@@ -56,13 +48,21 @@ class Hero extends ContentElement
         if ($this->addImage && $this->singleSRC) {
             $objModel = FilesModel::findByUuid($this->singleSRC);
 
-            if (is_file(TL_ROOT.'/'.$objModel->path)) {
+            if ($objModel !== null && is_file(System::getContainer()->getParameter('kernel.project_dir') . '/' . $objModel->path)) {
                 $this->singleSRC = $objModel->path;
 
-                static::addImageToTemplate($this->Template, [
-                    'singleSRC' => $objModel->path,
-                    'size' => $this->size,
-                ], null, null, $objModel);
+                $figure = System::getContainer()
+                    ->get('contao.image.studio')
+                    ->createFigureBuilder()
+                    ->from($this->singleSRC)
+                    ->setSize($this->size)
+                    ->buildIfResourceExists();
+
+
+                if (null !== $figure)
+                {
+                    $figure->applyLegacyTemplateData($this->Template,'', $this->floating);
+                }
             }
         }
 
@@ -70,16 +70,21 @@ class Hero extends ContentElement
         if ($this->heroBackgroundImage) {
             $objModel = FilesModel::findByUuid($this->heroBackgroundImage);
 
-            if (is_file(TL_ROOT.'/'.$objModel->path)) {
+            if ($objModel !== null && is_file(System::getContainer()->getParameter('kernel.project_dir') . '/' . $objModel->path)) {
                 $this->Template->heroImage = $objModel->path;
 
-                $image = new \stdClass();
-                static::addImageToTemplate($image, [
-                    'singleSRC' => $objModel->path,
-                    'size' => $this->heroSize,
-                ], null, null, $objModel);
+                $figure = System::getContainer()
+                    ->get('contao.image.studio')
+                    ->createFigureBuilder()
+                    ->from($this->heroBackgroundImage)
+                    ->setSize($this->heroSize)
+                    ->buildIfResourceExists();
 
-                $this->Template->heroBackground = $image;
+
+                if (null !== $figure)
+                {
+                    $this->Template->heroBackground = (object) $figure->getLegacyTemplateData();
+                }
             }
         }
 
