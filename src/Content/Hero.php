@@ -20,6 +20,8 @@ use Contao\FilesModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\FrontendTemplate;
+use Contao\File;
+use Contao\Image;
 
 class Hero extends ContentElement
 {
@@ -190,18 +192,7 @@ class Hero extends ContentElement
         // Pass File objects to the template
         foreach ($objFiles as $objFileModel)
         {
-            /** @var FilesModel $objFileModel */
-            $objMeta = $objFileModel->getMetadata($strLanguage);
-            $strTitle = null;
-
-            if (null !== $objMeta)
-            {
-                $strTitle = $objMeta->getTitle();
-            }
-
             $objFile = new File($objFileModel->path);
-            $objFile->title = StringUtil::specialchars($strTitle ?: $objFile->name);
-
             $arrFiles[$objFile->extension] = $objFile;
         }
 

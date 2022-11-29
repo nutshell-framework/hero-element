@@ -14,11 +14,12 @@ declare(strict_types=1);
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'addText';
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'addBackgroundImage';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'addBackgroundVideo';
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['hero'] = '{type_legend},type,headline;'
                                                        .'{text_legend},addText;'
                                                        .'{image_legend},addImage;'
-                                                       .'{background_legend},addBackgroundImage,heroBackgroundVideo;'
+                                                       .'{background_legend},addBackgroundImage,addBackgroundVideo;'
                                                        .'{link_primary_legend},urlPrimary,targetPrimary,linkTitlePrimary,titleTextPrimary,relPrimary,linkClassPrimary;'
                                                        .'{link_secondary_legend},urlSecondary,targetSecondary,linkTitleSecondary,titleTextSecondary,relSecondary,linkClassSecondary;'
                                                        .'{template_legend:hide},customTpl;'
@@ -28,10 +29,19 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['hero'] = '{type_legend},type,headl
 
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['addText'] = 'text';
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['addBackgroundImage'] = 'heroBackgroundImage,heroSize';
+$GLOBALS['TL_DCA']['tl_content']['subpalettes']['addBackgroundVideo'] = 'heroBackgroundVideo';
 
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['addBackgroundImage'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_content']['addBackgroundImage'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['submitOnChange' => true],
+    'sql' => "char(1) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['addBackgroundVideo'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_content']['addBackgroundVideo'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['submitOnChange' => true],
