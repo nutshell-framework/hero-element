@@ -31,6 +31,66 @@ class Hero extends ContentElement
     protected $strTemplate = 'ce_hero';
 
     /**
+     * Files object
+     * @var Collection|FilesModel
+     */
+    protected $objFiles;
+
+    /**
+     * Return if there are no files
+     *
+     * @return string
+     */
+    public function generate()
+    {
+        if (!$this->heroBackgroundVideo)
+        {
+            return '';
+        }
+
+        $source = StringUtil::deserialize($this->heroBackgroundVideo);
+
+        if (empty($source) || !\is_array($source))
+        {
+            return '';
+        }
+
+        $objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, array('mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv', 'm4a', 'mp3', 'wma', 'mpeg', 'wav', 'ogg'));
+
+        if ($objFiles === null)
+        {
+            return '';
+        }
+
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+
+        // Display a list of files in the back end
+        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
+        {
+            $return = '<ul>';
+
+            while ($objFiles->next())
+            {
+                $objFile = new File($objFiles->path);
+                $return .= '<li>' . Image::getHtml($objFile->icon, '', 'class="mime_icon"') . ' <span>' . $objFile->name . '</span> <span class="size">(' . $this->getReadableSize($objFile->size) . ')</span></li>';
+            }
+
+            $return .= '</ul>';
+
+            if ($this->headline)
+            {
+                $return = '<' . $this->hl . '>' . $this->headline . '</' . $this->hl . '>' . $return;
+            }
+
+            return $return;
+        }
+
+        $this->objFiles = $objFiles;
+
+        return parent::generate();
+    }
+
+    /**
      * Generate the content element.
      */
     protected function compile()
@@ -103,5 +163,48 @@ class Hero extends ContentElement
             $this->Template->targetSecondary = ' target="_blank"';
             $this->Template->relSecondary = ' rel="noreferrer noopener"';
         }
+
+        // VideoBackground
+        $objFiles = $this->objFiles;
+
+        /** @var FilesModel $objFirst */
+        $objFirst = $objFiles->current();
+
+        // Pre-sort the array by preference
+        if (\in_array($objFirst->extension, array('mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv')))
+        {
+            $this->Template->isVideo = true;
+            $this->Template->containerClass = 'video_container';
+
+            $arrFiles = array('webm'=>null, 'mp4'=>null, 'm4v'=>null, 'mov'=>null, 'wmv'=>null, 'ogv'=>null);
+        }
+        else
+        {
+            $this->Template->isVideo = false;
+            $this->Template->containerClass = 'audio_container';
+
+            $arrFiles = array('m4a'=>null, 'mp3'=>null, 'wma'=>null, 'mpeg'=>null, 'wav'=>null, 'ogg'=>null);
+        }
+
+
+        // Pass File objects to the template
+        foreach ($objFiles as $objFileModel)
+        {
+            /** @var FilesModel $objFileModel */
+            $objMeta = $objFileModel->getMetadata($strLanguage);
+            $strTitle = null;
+
+            if (null !== $objMeta)
+            {
+                $strTitle = $objMeta->getTitle();
+            }
+
+            $objFile = new File($objFileModel->path);
+            $objFile->title = StringUtil::specialchars($strTitle ?: $objFile->name);
+
+            $arrFiles[$objFile->extension] = $objFile;
+        }
+
+        $this->Template->files = array_values(array_filter($arrFiles));
     }
 }
