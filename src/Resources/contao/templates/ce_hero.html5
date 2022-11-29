@@ -65,7 +65,8 @@
   </div>
 
   <?php if ($this->addBackgroundImage || $this->addBackgroundVideo): ?>
-    <figure class="hero__background">
+    <?= $this->isVideo ?>
+    <figure class="hero__background <?= ($this->isVideo == '1') ? 'hero__background--video' : 'hero__background--image'; ?>">
 
       <?php if ($this->addBackgroundVideo == null): ?>
         <?php $this->insert('picture_default', $this->heroBackground->picture); ?>
