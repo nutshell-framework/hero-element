@@ -64,9 +64,20 @@
 
   </div>
 
-  <?php if ($this->addBackgroundImage): ?>
-    <figure class="hero__background">
-      <?php $this->insert('picture_default', $this->heroBackground->picture); ?>
+  <?php if ($this->addBackgroundImage || $this->addBackgroundVideo): ?>
+
+    <figure class="hero__background <?= ($this->isVideo == '1') ? 'hero__background--video' : 'hero__background--image'; ?>">
+
+      <?php if ($this->addBackgroundVideo == null): ?>
+        <?php $this->insert('picture_default', $this->heroBackground->picture); ?>
+      <?php else: ?>
+        <video <?php if ($this->addBackgroundImage): ?> poster="<?= $this->heroBackground->src ?>"<?php endif; ?> preload="auto" loop muted autoplay playsinline>
+          <?php foreach ($this->files as $file): ?>
+            <source type="<?= $file->mime ?>" src="<?= $file->path ?>">
+          <?php endforeach; ?>
+        </video>
+      <?php endif; ?>
+
     </figure>
   <?php endif; ?>
 
