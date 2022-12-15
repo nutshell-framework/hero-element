@@ -45,49 +45,41 @@ class Hero extends ContentElement
      */
     public function generate()
     {
-        if (!$this->heroBackgroundVideo)
-        {
-            return '';
-        }
-
         $source = StringUtil::deserialize($this->heroBackgroundVideo);
 
-        if (empty($source) || !\is_array($source))
+
+        if (!empty($source) || \is_array($source))
         {
-            return '';
-        }
+            $objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, array('mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv', 'm4a', 'mp3', 'wma', 'mpeg', 'wav', 'ogg'));
 
-        $objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, array('mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv', 'm4a', 'mp3', 'wma', 'mpeg', 'wav', 'ogg'));
-
-        if ($objFiles === null)
-        {
-            return '';
-        }
-
-        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
-
-        // Display a list of files in the back end
-        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
-        {
-            $return = '<ul>';
-
-            while ($objFiles->next())
+            if ($objFiles !== null)
             {
-                $objFile = new File($objFiles->path);
-                $return .= '<li>' . Image::getHtml($objFile->icon, '', 'class="mime_icon"') . ' <span>' . $objFile->name . '</span> <span class="size">(' . $this->getReadableSize($objFile->size) . ')</span></li>';
+                $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+
+                // Display a list of files in the back end
+                if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
+                {
+                    $return = '<ul>';
+
+                    while ($objFiles->next())
+                    {
+                        $objFile = new File($objFiles->path);
+                        $return .= '<li>' . Image::getHtml($objFile->icon, '', 'class="mime_icon"') . ' <span>' . $objFile->name . '</span> <span class="size">(' . $this->getReadableSize($objFile->size) . ')</span></li>';
+                    }
+
+                    $return .= '</ul>';
+
+                    if ($this->headline)
+                    {
+                        $return = '<' . $this->hl . '>' . $this->headline . '</' . $this->hl . '>' . $return;
+                    }
+
+                    return $return;
+                }
+
+                $this->objFiles = $objFiles;
             }
-
-            $return .= '</ul>';
-
-            if ($this->headline)
-            {
-                $return = '<' . $this->hl . '>' . $this->headline . '</' . $this->hl . '>' . $return;
-            }
-
-            return $return;
         }
-
-        $this->objFiles = $objFiles;
 
         return parent::generate();
     }
@@ -121,9 +113,8 @@ class Hero extends ContentElement
                     ->buildIfResourceExists();
 
 
-                if (null !== $figure)
-                {
-                    $figure->applyLegacyTemplateData($this->Template,'', $this->floating);
+                if (null !== $figure) {
+                    $figure->applyLegacyTemplateData($this->Template, '', $this->floating);
                 }
             }
         }
@@ -143,8 +134,7 @@ class Hero extends ContentElement
                     ->buildIfResourceExists();
 
 
-                if (null !== $figure)
-                {
+                if (null !== $figure) {
                     $this->Template->heroBackground = (object) $figure->getLegacyTemplateData();
                 }
             }
@@ -167,26 +157,26 @@ class Hero extends ContentElement
         }
 
         // VideoBackground
-        $objFiles = $this->objFiles;
+        if ($this->heroBackgroundVideo) {
+            $objFiles = $this->objFiles;
 
-        /** @var FilesModel $objFirst */
-        $objFirst = $objFiles->current();
+            /** @var FilesModel $objFirst */
+            $objFirst = $objFiles->current();
 
-        // Pre-sort the array by preference
-        if (\in_array($objFirst->extension, array('mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv')))
-        {
-            $this->Template->isVideo = true;
+            // Pre-sort the array by preference
+            if (\in_array($objFirst->extension, array('mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv'))) {
+                $this->Template->isVideo = true;
 
-            $arrFiles = array('webm'=>null, 'mp4'=>null, 'm4v'=>null, 'mov'=>null, 'wmv'=>null, 'ogv'=>null);
+                $arrFiles = array('webm'=>null, 'mp4'=>null, 'm4v'=>null, 'mov'=>null, 'wmv'=>null, 'ogv'=>null);
+            }
+
+            // Pass File objects to the template
+            foreach ($objFiles as $objFileModel) {
+                $objFile = new File($objFileModel->path);
+                $arrFiles[$objFile->extension] = $objFile;
+            }
+
+            $this->Template->files = array_values(array_filter($arrFiles));
         }
-
-        // Pass File objects to the template
-        foreach ($objFiles as $objFileModel)
-        {
-            $objFile = new File($objFileModel->path);
-            $arrFiles[$objFile->extension] = $objFile;
-        }
-
-        $this->Template->files = array_values(array_filter($arrFiles));
     }
 }
