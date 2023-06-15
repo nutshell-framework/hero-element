@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    autoconfigure: true
+
+  Nutshell\Herolement\Migration\EufHeroMigration:
+    arguments: [ '@database_connection' ]
+    tags: [ 'contao.migration' ]
