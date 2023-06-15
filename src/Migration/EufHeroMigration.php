@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * Card Element for Contao Open Source CMS.
+ * Hero Element for Contao Open Source CMS.
  *
  * @copyright  Copyright (c) 2022, Erdmann & Freunde
  * @author     Erdmann & Freunde <https://erdmann-freunde.de>
@@ -36,8 +36,8 @@ class EufHeroMigration extends AbstractMigration
         $columns = $schemaManager->listTableColumns('tl_content');
 
         return
-            isset($columns['singleSRC']) &&
-            !isset($columns['heroBackgroundImage']);
+        // column names needs to be written in lowercase!
+         !isset($columns['herobackgroundimage'], $columns['herosize']);
 
         return
             $this->connection->fetchOne(
@@ -47,25 +47,31 @@ class EufHeroMigration extends AbstractMigration
 
     public function run(): MigrationResult
     {
+
         $this->connection->executeQuery("
             ALTER TABLE
                 tl_content
 
+            ADD addBackgroundImage char(1) NOT NULL default '',
             ADD heroBackgroundImage binary(16) NULL,
-            ADD heroSize varchar(128) NOT NULL default ''
+            ADD heroSize varchar(255) NOT NULL default ''
         ");
 
         $stmt = $this->connection->prepare('
             UPDATE
                 tl_content
             SET
-                heroBackgroundImage = singleSRC,
-                heroSize = size,
+            addImage = :addImage,
+            addBackgroundImage = :addBackgroundImage,
+            heroBackgroundImage = singleSRC,
+                heroSize = size
             WHERE
                 type = :type
         ');
 
-        $stmt->bindValue('type', 'card');
+        $stmt->bindValue('addImage', '0');
+        $stmt->bindValue('addBackgroundImage', '1');
+        $stmt->bindValue('type', 'hero');
         $stmt->execute();
 
         return $this->createResult(true, 'Migrate euf_hero to hero-element');
