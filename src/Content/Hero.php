@@ -90,7 +90,7 @@ class Hero extends ContentElement
     protected function compile()
     {
         // Add the static files URL to images
-        if ($staticUrl = System::getContainer()->get('contao.assets.files_context')->getStaticUrl()) {
+        if ($this->text && $staticUrl = System::getContainer()->get('contao.assets.files_context')->getStaticUrl()) {
             $path = Config::get('uploadPath') . '/';
             $this->text = str_replace(' src="' . $path, ' src="' . $staticUrl . $path, $this->text);
         }

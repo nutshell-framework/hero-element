@@ -22,25 +22,25 @@
       </figure>
     <?php endif; ?>
 
-    <div class="hero__text">
-      <?php if ($this->headline): ?><<?= $this->hl ?>  class="hero__headline"><?= $this->headline ?></<?= $this->hl ?>><?php endif; ?>
+    <?php if ($this->addText || $this->headline): ?>
+      <div class="hero__text">
+        <?php if ($this->headline): ?><<?= $this->hl ?>  class="hero__headline"><?= $this->headline ?></<?= $this->hl ?>><?php endif; ?>
 
-      <?php if ($this->addText): ?>
         <div class="hero__description"><?= $this->text ?></div>
-      <?php endif; ?>
 
-      <?php if ($this->urlPrimary || $this->urlSecondary): ?>
-        <div class="hero__links">
-          <?php if ($this->urlPrimary): ?>
-            <a href="<?= $this->urlPrimary ?>" class="<?= $this->linkClassPrimary ?>" title="<?= $this->titleTextPrimary ?>"<?= $this->targetPrimary ?><?= $this->relPrimary ?>><?= $this->linkTitlePrimary ?></a>
-          <?php endif; ?>
+        <?php if ($this->urlPrimary || $this->urlSecondary): ?>
+          <div class="hero__links">
+            <?php if ($this->urlPrimary): ?>
+              <a href="<?= $this->urlPrimary ?>" class="<?= $this->linkClassPrimary ?>" title="<?= $this->titleTextPrimary ?>"<?= $this->targetPrimary ?><?= $this->relPrimary ?>><?= $this->linkTitlePrimary ?></a>
+            <?php endif; ?>
 
-          <?php if ($this->urlSecondary): ?>
-            <a href="<?= $this->urlSecondary ?>" class="<?= $this->linkClassSecondary ?>" title="<?= $this->titleTextSecondary ?>"<?= $this->targetSecondary ?><?= $this->relSecondary ?>><?= $this->linkTitleSecondary ?></a>
-          <?php endif; ?>
-        </div>
-      <?php endif; ?>
-    </div>
+            <?php if ($this->urlSecondary): ?>
+              <a href="<?= $this->urlSecondary ?>" class="<?= $this->linkClassSecondary ?>" title="<?= $this->titleTextSecondary ?>"<?= $this->targetSecondary ?><?= $this->relSecondary ?>><?= $this->linkTitleSecondary ?></a>
+            <?php endif; ?>
+          </div>
+        <?php endif; ?>
+      </div>
+    <?php endif; ?>
 
     <?php if ($this->addImage && ($this->floating =='right' || $this->floating == 'below')): ?>
       <figure class="hero__image<?= $this->floatClass ?>"<?php if ($this->margin): ?> style="<?= $this->margin ?>"<?php endif; ?>>
