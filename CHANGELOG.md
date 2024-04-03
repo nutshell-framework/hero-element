@@ -1,5 +1,8 @@
 # CHANGELOG:
 
+## 1.2.2 / 1.2.3 (03.04.2024)
+- Leere Textcontainer gar nicht erst anzeigen, Text nur ausgeben, wenn Häkchen gesetzt ist
+
 ## 1.2.1 (03.04.2024)
 - Migration für Wechsel von euf_hero zu hero-element
 
