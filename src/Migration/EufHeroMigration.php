@@ -63,7 +63,8 @@ class EufHeroMigration extends AbstractMigration
             SET
                 addBackgroundImage = addImage,
                 heroBackgroundImage = singleSRC,
-                heroSize = size
+                heroSize = size,
+                addImage = :addImage
             WHERE
                 type = :type
         ');
