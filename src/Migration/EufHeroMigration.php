@@ -61,16 +61,14 @@ class EufHeroMigration extends AbstractMigration
             UPDATE
                 tl_content
             SET
-            addImage = :addImage,
-            addBackgroundImage = :addBackgroundImage,
-            heroBackgroundImage = singleSRC,
+                addBackgroundImage = addImage,
+                heroBackgroundImage = singleSRC,
                 heroSize = size
             WHERE
                 type = :type
         ');
 
         $stmt->bindValue('addImage', '0');
-        $stmt->bindValue('addBackgroundImage', '1');
         $stmt->bindValue('type', 'hero');
         $stmt->execute();
 
