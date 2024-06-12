@@ -33,6 +33,10 @@ class EufHeroMigration extends AbstractMigration
     {
         $schemaManager = $this->connection->getSchemaManager();
 
+        if (!$schemaManager->tablesExist(['tl_content'])) {
+            return false;
+        }
+
         $columns = $schemaManager->listTableColumns('tl_content');
 
         return
