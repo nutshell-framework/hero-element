@@ -2,7 +2,7 @@
 
   <div class="hero__content">
 
-    <?php if ($this->addImage && ($this->floating =='above' || $this->floating == 'left')): ?>
+    <?php if ($this->addImage && $this->floating !='below'): ?>
       <figure class="hero__image<?= $this->floatClass ?>"<?php if ($this->margin): ?> style="<?= $this->margin ?>"<?php endif; ?>>
 
         <?php if ($this->href): ?>
@@ -44,7 +44,7 @@
       </div>
     <?php endif; ?>
 
-    <?php if ($this->addImage && ($this->floating =='right' || $this->floating == 'below')): ?>
+    <?php if ($this->addImage && $this->floating == 'below'): ?>
       <figure class="hero__image<?= $this->floatClass ?>"<?php if ($this->margin): ?> style="<?= $this->margin ?>"<?php endif; ?>>
 
         <?php if ($this->href): ?>
