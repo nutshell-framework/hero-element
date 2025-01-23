@@ -110,6 +110,7 @@ class Hero extends ContentElement
                     ->createFigureBuilder()
                     ->from($this->singleSRC)
                     ->setSize($this->size)
+                    ->setOverwriteMetadata($this->objModel->getOverwriteMetadata())
                     ->buildIfResourceExists();
 
 
