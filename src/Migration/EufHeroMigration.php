@@ -31,7 +31,7 @@ class EufHeroMigration extends AbstractMigration
 
     public function shouldRun(): bool
     {
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         if (!$schemaManager->tablesExist(['tl_content'])) {
             return false;
@@ -65,17 +65,18 @@ class EufHeroMigration extends AbstractMigration
             UPDATE
                 tl_content
             SET
-                addBackgroundImage = addImage,
-                heroBackgroundImage = singleSRC,
-                heroSize = size,
-                addImage = :addImage
+            addImage = :addImage,
+            addBackgroundImage = :addBackgroundImage,
+            heroBackgroundImage = singleSRC,
+                heroSize = size
             WHERE
                 type = :type
         ');
 
         $stmt->bindValue('addImage', '0');
+        $stmt->bindValue('addBackgroundImage', '1');
         $stmt->bindValue('type', 'hero');
-        $stmt->execute();
+        $stmt->executeStatement();
 
         return $this->createResult(true, 'Migrate euf_hero to hero-element');
     }
