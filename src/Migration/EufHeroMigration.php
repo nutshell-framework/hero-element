@@ -3,12 +3,11 @@
 declare(strict_types=1);
 
 /*
- * Hero Element for Contao Open Source CMS.
+ * This file is part of nutshell-framework/hero-element.
  *
- * @copyright  Copyright (c) 2022, Erdmann & Freunde
- * @author     Erdmann & Freunde <https://erdmann-freunde.de>
- * @license    MIT
- * @link       http://github.com/nutshell-framework/hero-element
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license MIT
  */
 
 namespace Nutshell\HeroElement\Migration;
@@ -42,16 +41,10 @@ class EufHeroMigration extends AbstractMigration
         return
         // column names needs to be written in lowercase!
          !isset($columns['herobackgroundimage'], $columns['herosize']);
-
-        return
-            $this->connection->fetchOne(
-                "SELECT COUNT(*) FROM tl_content WHERE type = 'hero'"
-            ) > 0;
     }
 
     public function run(): MigrationResult
     {
-
         $this->connection->executeQuery("
             ALTER TABLE
                 tl_content

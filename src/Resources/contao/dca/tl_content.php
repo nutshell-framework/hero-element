@@ -3,14 +3,16 @@
 declare(strict_types=1);
 
 /*
- * Hero Element for Contao Open Source CMS.
+ * This file is part of nutshell-framework/hero-element.
  *
- * @copyright  Copyright (c) 2021, Erdmann & Freunde
- * @author     Dennis Erdmann
- * @author     Richard Henkenjohann
- * @license    MIT
- * @link       http://github.com/nutshell-framework/hero-element
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license MIT
  */
+
+use Contao\BackendUser;
+use Contao\System;
+
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'addText';
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'addBackgroundImage';
@@ -31,7 +33,6 @@ $GLOBALS['TL_DCA']['tl_content']['subpalettes']['addText'] = 'text';
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['addBackgroundImage'] = 'heroBackgroundImage,heroSize';
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['addBackgroundVideo'] = 'heroBackgroundVideo';
 
-
 $GLOBALS['TL_DCA']['tl_content']['fields']['addBackgroundImage'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_content']['addBackgroundImage'],
     'exclude' => true,
@@ -49,33 +50,29 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['addBackgroundVideo'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['heroBackgroundImage'] = [
-    'exclude'                 => true,
-    'inputType'               => 'fileTree',
-    'eval'                    => array('filesOnly'=>true, 'fieldType'=>'radio', 'mandatory'=>false, 'tl_class'=>'clr'),
-    'load_callback' => array
-    (
-        array('tl_content', 'setSingleSrcFlags')
-    ),
-    'sql'                     => "binary(16) NULL"
+    'exclude' => true,
+    'inputType' => 'fileTree',
+    'eval' => ['filesOnly' => true, 'fieldType' => 'radio', 'mandatory' => false, 'tl_class' => 'clr'],
+    'load_callback' => [
+        ['tl_content', 'setSingleSrcFlags'],
+    ],
+    'sql' => 'binary(16) NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['heroBackgroundVideo'] = [
-    'exclude'                 => true,
-    'inputType'               => 'fileTree',
-    'eval'                    => array('filesOnly'=>true, 'fieldType'=>'checkbox', 'multiple'=> true, 'mandatory'=>false, 'tl_class'=>'clr'),
-    'sql'                     => "blob NULL"
+    'exclude' => true,
+    'inputType' => 'fileTree',
+    'eval' => ['filesOnly' => true, 'fieldType' => 'checkbox', 'multiple' => true, 'mandatory' => false, 'tl_class' => 'clr'],
+    'sql' => 'blob NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['heroSize'] = [
-    'exclude'                 => true,
-    'inputType'               => 'imageSize',
-    'reference'               => &$GLOBALS['TL_LANG']['MSC'],
-    'eval'                    => array('rgxp'=>'natural', 'includeBlankOption'=>true, 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'),
-    'options_callback' => static function ()
-    {
-        return Contao\System::getContainer()->get('contao.image.sizes')->getOptionsForUser(Contao\BackendUser::getInstance());
-    },
-    'sql'                     => "varchar(255) NOT NULL default ''"
+    'exclude' => true,
+    'inputType' => 'imageSize',
+    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+    'eval' => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
+    'options_callback' => static fn () => System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance()),
+    'sql' => "varchar(255) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['urlPrimary'] = [

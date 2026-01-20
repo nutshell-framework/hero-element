@@ -20,12 +20,13 @@
     "source": "https://github.com/nutshell-framework/hero-element"
   },
   "require": {
-    "php": ">=7.0",
-    "contao/core-bundle": "^4.13 || ^5.0",
-    "symfony/http-kernel": "^5.0 || ^6.0"
+    "php": ">=8.3",
+    "contao/core-bundle": "^5.0",
+    "symfony/http-kernel": "^5.0 || ^6.0 || ^7.0"
   },
   "require-dev": {
-    "contao/manager-plugin": "~2.2"
+    "contao/manager-plugin": "~2.2",
+    "terminal42/contao-build-tools": "dev-main"
   },
   "autoload": {
     "psr-4": {
@@ -34,5 +35,13 @@
   },
   "extra": {
     "contao-manager-plugin": "Nutshell\\HeroElement\\ContaoManager\\Plugin"
+  },
+  "config": {
+    "allow-plugins": {
+      "contao-components/installer": true,
+      "php-http/discovery": true,
+      "contao/manager-plugin": true,
+      "terminal42/contao-build-tools": true
+    }
   }
 }

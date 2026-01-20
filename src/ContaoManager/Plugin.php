@@ -3,13 +3,11 @@
 declare(strict_types=1);
 
 /*
- * Hero Element for Contao Open Source CMS.
+ * This file is part of nutshell-framework/hero-element.
  *
- * @copyright  Copyright (c) 2021, Erdmann & Freunde
- * @author     Dennis Erdmann
- * @author     Richard Henkenjohann
- * @license    MIT
- * @link       http://github.com/nutshell-framework/hero-element
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license MIT
  */
 
 namespace Nutshell\HeroElement\ContaoManager;
@@ -26,7 +24,7 @@ class Plugin implements BundlePluginInterface
     /**
      * Gets a list of autoload configurations for this bundle.
      *
-     * @return ConfigInterface[]
+     * @return array<ConfigInterface>
      */
     public function getBundles(ParserInterface $parser)
     {
@@ -35,7 +33,7 @@ class Plugin implements BundlePluginInterface
                 ->setLoadAfter(
                     [
                         ContaoCoreBundle::class,
-                    ]
+                    ],
                 ),
         ];
     }

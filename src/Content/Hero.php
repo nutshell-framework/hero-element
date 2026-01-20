@@ -3,25 +3,22 @@
 declare(strict_types=1);
 
 /*
- * Hero Element for Contao Open Source CMS.
+ * This file is part of nutshell-framework/hero-element.
  *
- * @copyright  Copyright (c) 2021, Erdmann & Freunde
- * @author     Dennis Erdmann
- * @author     Richard Henkenjohann
- * @license    MIT
- * @link       http://github.com/nutshell-framework/hero-element
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license MIT
  */
 
 namespace Nutshell\HeroElement\Content;
 
 use Contao\Config;
 use Contao\ContentElement;
+use Contao\File;
 use Contao\FilesModel;
+use Contao\Image;
 use Contao\StringUtil;
 use Contao\System;
-use Contao\FrontendTemplate;
-use Contao\File;
-use Contao\Image;
 
 class Hero extends ContentElement
 {
@@ -33,13 +30,14 @@ class Hero extends ContentElement
     protected $strTemplate = 'ce_hero';
 
     /**
-     * Files object
+     * Files object.
+     *
      * @var Collection|FilesModel
      */
     protected $objFiles;
 
     /**
-     * Return if there are no files
+     * Return if there are no files.
      *
      * @return string
      */
@@ -47,31 +45,25 @@ class Hero extends ContentElement
     {
         $source = StringUtil::deserialize($this->heroBackgroundVideo);
 
+        if (!empty($source) || \is_array($source)) {
+            $objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, ['mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv', 'm4a', 'mp3', 'wma', 'mpeg', 'wav', 'ogg']);
 
-        if (!empty($source) || \is_array($source))
-        {
-            $objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, array('mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv', 'm4a', 'mp3', 'wma', 'mpeg', 'wav', 'ogg'));
-
-            if ($objFiles !== null)
-            {
+            if (null !== $objFiles) {
                 $request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
                 // Display a list of files in the back end
-                if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
-                {
+                if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
                     $return = '<ul>';
 
-                    while ($objFiles->next())
-                    {
+                    while ($objFiles->next()) {
                         $objFile = new File($objFiles->path);
-                        $return .= '<li>' . Image::getHtml($objFile->icon, '', 'class="mime_icon"') . ' <span>' . $objFile->name . '</span> <span class="size">(' . $this->getReadableSize($objFile->size) . ')</span></li>';
+                        $return .= '<li>'.Image::getHtml($objFile->icon, '', 'class="mime_icon"').' <span>'.$objFile->name.'</span> <span class="size">('.$this->getReadableSize($objFile->size).')</span></li>';
                     }
 
                     $return .= '</ul>';
 
-                    if ($this->headline)
-                    {
-                        $return = '<' . $this->hl . '>' . $this->headline . '</' . $this->hl . '>' . $return;
+                    if ($this->headline) {
+                        $return = '<'.$this->hl.'>'.$this->headline.'</'.$this->hl.'>'.$return;
                     }
 
                     return $return;
@@ -87,12 +79,12 @@ class Hero extends ContentElement
     /**
      * Generate the content element.
      */
-    protected function compile()
+    protected function compile(): void
     {
         // Add the static files URL to images
         if ($this->text && $staticUrl = System::getContainer()->get('contao.assets.files_context')->getStaticUrl()) {
-            $path = Config::get('uploadPath') . '/';
-            $this->text = str_replace(' src="' . $path, ' src="' . $staticUrl . $path, $this->text);
+            $path = Config::get('uploadPath').'/';
+            $this->text = str_replace(' src="'.$path, ' src="'.$staticUrl.$path, $this->text);
         }
 
         $this->Template->text = StringUtil::encodeEmail($this->text);
@@ -102,7 +94,7 @@ class Hero extends ContentElement
         if ($this->addImage && $this->singleSRC) {
             $objModel = FilesModel::findByUuid($this->singleSRC);
 
-            if ($objModel !== null && is_file(System::getContainer()->getParameter('kernel.project_dir') . '/' . $objModel->path)) {
+            if (null !== $objModel && is_file(System::getContainer()->getParameter('kernel.project_dir').'/'.$objModel->path)) {
                 $this->singleSRC = $objModel->path;
 
                 $figure = System::getContainer()
@@ -111,8 +103,8 @@ class Hero extends ContentElement
                     ->from($this->singleSRC)
                     ->setSize($this->size)
                     ->setOverwriteMetadata($this->objModel->getOverwriteMetadata())
-                    ->buildIfResourceExists();
-
+                    ->buildIfResourceExists()
+                ;
 
                 if (null !== $figure) {
                     $figure->applyLegacyTemplateData($this->Template, '', $this->floating);
@@ -124,7 +116,7 @@ class Hero extends ContentElement
         if ($this->heroBackgroundImage) {
             $objModel = FilesModel::findByUuid($this->heroBackgroundImage);
 
-            if ($objModel !== null && is_file(System::getContainer()->getParameter('kernel.project_dir') . '/' . $objModel->path)) {
+            if (null !== $objModel && is_file(System::getContainer()->getParameter('kernel.project_dir').'/'.$objModel->path)) {
                 $this->Template->heroImage = $objModel->path;
 
                 $figure = System::getContainer()
@@ -132,8 +124,8 @@ class Hero extends ContentElement
                     ->createFigureBuilder()
                     ->from($this->heroBackgroundImage)
                     ->setSize($this->heroSize)
-                    ->buildIfResourceExists();
-
+                    ->buildIfResourceExists()
+                ;
 
                 if (null !== $figure) {
                     $this->Template->heroBackground = (object) $figure->getLegacyTemplateData();
@@ -165,10 +157,10 @@ class Hero extends ContentElement
             $objFirst = $objFiles->current();
 
             // Pre-sort the array by preference
-            if (\in_array($objFirst->extension, array('mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv'))) {
+            if (\in_array($objFirst->extension, ['mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv'], true)) {
                 $this->Template->isVideo = true;
 
-                $arrFiles = array('webm'=>null, 'mp4'=>null, 'm4v'=>null, 'mov'=>null, 'wmv'=>null, 'ogv'=>null);
+                $arrFiles = ['webm' => null, 'mp4' => null, 'm4v' => null, 'mov' => null, 'wmv' => null, 'ogv' => null];
             }
 
             // Pass File objects to the template
