@@ -1,5 +1,9 @@
 # CHANGELOG:
 
+## 1.2.6 (28.01.2026)
+
+- Anpassungen für Contao 5.7 LTS
+
 ## 1.2.5 (23.01.2025)
 
 - Das Inhaltsbild berücksichtigt nun auch überschriebene Meta-Daten im Element

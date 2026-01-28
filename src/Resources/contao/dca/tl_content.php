@@ -13,7 +13,6 @@ declare(strict_types=1);
 use Contao\BackendUser;
 use Contao\System;
 
-
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'addText';
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'addBackgroundImage';
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'addBackgroundVideo';

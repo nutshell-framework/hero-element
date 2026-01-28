@@ -17,6 +17,7 @@ use Contao\ContentElement;
 use Contao\File;
 use Contao\FilesModel;
 use Contao\Image;
+use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
 
@@ -32,7 +33,7 @@ class Hero extends ContentElement
     /**
      * Files object.
      *
-     * @var Collection|FilesModel
+     * @var Collection<FilesModel>|null
      */
     protected $objFiles;
 
@@ -41,6 +42,7 @@ class Hero extends ContentElement
      *
      * @return string
      */
+    #[\Override]
     public function generate()
     {
         $source = StringUtil::deserialize($this->heroBackgroundVideo);
@@ -56,6 +58,7 @@ class Hero extends ContentElement
                     $return = '<ul>';
 
                     while ($objFiles->next()) {
+                        /** @var FilesModel $objFiles */
                         $objFile = new File($objFiles->path);
                         $return .= '<li>'.Image::getHtml($objFile->icon, '', 'class="mime_icon"').' <span>'.$objFile->name.'</span> <span class="size">('.$this->getReadableSize($objFile->size).')</span></li>';
                     }
@@ -152,24 +155,27 @@ class Hero extends ContentElement
         // VideoBackground
         if ($this->heroBackgroundVideo) {
             $objFiles = $this->objFiles;
+            $arrFiles = [];
 
-            /** @var FilesModel $objFirst */
-            $objFirst = $objFiles->current();
+            if (null !== $objFiles) {
+                /** @var FilesModel $objFirst */
+                $objFirst = $objFiles->current();
 
-            // Pre-sort the array by preference
-            if (\in_array($objFirst->extension, ['mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv'], true)) {
-                $this->Template->isVideo = true;
+                // Pre-sort the array by preference
+                if (\in_array($objFirst->extension, ['mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv'], true)) {
+                    $this->Template->isVideo = true;
 
-                $arrFiles = ['webm' => null, 'mp4' => null, 'm4v' => null, 'mov' => null, 'wmv' => null, 'ogv' => null];
+                    $arrFiles = ['webm' => null, 'mp4' => null, 'm4v' => null, 'mov' => null, 'wmv' => null, 'ogv' => null];
+                }
+
+                // Pass File objects to the template
+                foreach ($objFiles as $objFileModel) {
+                    $objFile = new File($objFileModel->path);
+                    $arrFiles[$objFile->extension] = $objFile;
+                }
+
+                $this->Template->files = array_values(array_filter($arrFiles));
             }
-
-            // Pass File objects to the template
-            foreach ($objFiles as $objFileModel) {
-                $objFile = new File($objFileModel->path);
-                $arrFiles[$objFile->extension] = $objFile;
-            }
-
-            $this->Template->files = array_values(array_filter($arrFiles));
         }
     }
 }
