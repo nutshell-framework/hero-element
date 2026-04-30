@@ -1,0 +1,83 @@
+{% set hasImageAbove = addImage and floating != 'below' %}
+{% set hasImageBelow = addImage and floating == 'below' %}
+{% set hasTextBlock = addText or headline %}
+{% set hasLinks = urlPrimary or urlSecondary %}
+{% set hasBackground = addBackgroundImage or addBackgroundVideo %}
+
+<div class="{{ class }} block"{{ cssID|raw }}{% if style %} style="{{ style }}"{% endif %}>
+  <div class="hero__content">
+    {% if hasImageAbove %}
+      <figure class="hero__image{{ floatClass }}"{% if margin %} style="{{ margin }}"{% endif %}>
+        {% if href %}
+          <a href="{{ href }}"{% if linkTitle %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
+        {% endif %}
+
+        {{ insert('picture_default', picture) }}
+
+        {% if href %}
+          </a>
+        {% endif %}
+
+        {% if caption %}
+          <figcaption class="caption">{{ caption }}</figcaption>
+        {% endif %}
+      </figure>
+    {% endif %}
+
+    {% if hasTextBlock %}
+      <div class="hero__text">
+        {% if headline %}
+          <{{ hl }} class="hero__headline">{{ headline }}</{{ hl }}>
+        {% endif %}
+
+        {% if addText %}
+          <div class="hero__description">{{ text|raw }}</div>
+        {% endif %}
+
+        {% if hasLinks %}
+          <div class="hero__links">
+            {% if urlPrimary %}
+              <a href="{{ urlPrimary }}" class="{{ linkClassPrimary }}" title="{{ titleTextPrimary }}"{{ targetPrimary|raw }}{{ relPrimary|raw }}>{{ linkTitlePrimary }}</a>
+            {% endif %}
+
+            {% if urlSecondary %}
+              <a href="{{ urlSecondary }}" class="{{ linkClassSecondary }}" title="{{ titleTextSecondary }}"{{ targetSecondary|raw }}{{ relSecondary|raw }}>{{ linkTitleSecondary }}</a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if hasImageBelow %}
+      <figure class="hero__image{{ floatClass }}"{% if margin %} style="{{ margin }}"{% endif %}>
+        {% if href %}
+          <a href="{{ href }}"{% if linkTitle %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
+        {% endif %}
+
+        {{ insert('picture_default', picture) }}
+
+        {% if href %}
+          </a>
+        {% endif %}
+
+        {% if caption %}
+          <figcaption class="caption">{{ caption }}</figcaption>
+        {% endif %}
+      </figure>
+    {% endif %}
+  </div>
+
+  {% if hasBackground %}
+    <figure class="hero__background {{ isVideo ? 'hero__background--video' : 'hero__background--image' }}">
+      {% if addBackgroundVideo == null %}
+        {{ insert('picture_default', heroBackground.picture) }}
+      {% else %}
+        <video{% if addBackgroundImage %} poster="{{ heroBackground.src }}"{% endif %} preload="auto" loop muted autoplay playsinline>
+          {% for file in files %}
+            <source type="{{ file.mime }}" src="{{ file.path }}">
+          {% endfor %}
+        </video>
+      {% endif %}
+    </figure>
+  {% endif %}
+</div>
