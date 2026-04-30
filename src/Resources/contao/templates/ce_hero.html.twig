@@ -12,7 +12,7 @@
           <a href="{{ href }}"{% if linkTitle %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
         {% endif %}
 
-        {{ insert('picture_default', picture) }}
+        {{ include('@Contao/picture_default.html.twig', picture, false) }}
 
         {% if href %}
           </a>
@@ -54,7 +54,7 @@
           <a href="{{ href }}"{% if linkTitle %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
         {% endif %}
 
-        {{ insert('picture_default', picture) }}
+        {{ include('@Contao/picture_default.html.twig', picture, false) }}
 
         {% if href %}
           </a>
@@ -70,7 +70,7 @@
   {% if hasBackground %}
     <figure class="hero__background {{ isVideo ? 'hero__background--video' : 'hero__background--image' }}">
       {% if addBackgroundVideo == null %}
-        {{ insert('picture_default', heroBackground.picture) }}
+        {{ include('@Contao/picture_default.html.twig', heroBackground.picture, false) }}
       {% else %}
         <video{% if addBackgroundImage %} poster="{{ heroBackground.src }}"{% endif %} preload="auto" loop muted autoplay playsinline>
           {% for file in files %}
