@@ -1,27 +1,32 @@
-{% set hasImageAbove = addImage and floating != 'below' %}
-{% set hasImageBelow = addImage and floating == 'below' %}
-{% set hasTextBlock = addText or headline %}
-{% set hasLinks = urlPrimary or urlSecondary %}
-{% set hasBackground = addBackgroundImage or addBackgroundVideo %}
+{% set hasImage      = addImage and picture is defined %}
+{% set hasImageAbove = hasImage and floating != 'below' %}
+{% set hasImageBelow = hasImage and floating == 'below' %}
+{% set hasTextBlock  = addText or headline %}
+{% set hasLinks      = urlPrimary or urlSecondary %}
+{% macro heroFigure(picture, floatClass, margin, href, linkTitle, attributes, caption) %}
+  <figure class="hero__image{{ floatClass }}"{% if margin %} style="{{ margin }}"{% endif %}>
+    {% if href %}
+      <a href="{{ href }}"{% if linkTitle %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
+    {% endif %}
+
+    {{ include('@Contao/picture_default.html.twig', picture, false) }}
+
+    {% if href %}
+      </a>
+    {% endif %}
+
+    {% if caption %}
+      <figcaption class="caption">{{ caption }}</figcaption>
+    {% endif %}
+  </figure>
+{% endmacro %}
+
+{% import _self as hero %}
 
 <div class="{{ class }} block"{{ cssID|raw }}{% if style %} style="{{ style }}"{% endif %}>
   <div class="hero__content">
     {% if hasImageAbove %}
-      <figure class="hero__image{{ floatClass }}"{% if margin %} style="{{ margin }}"{% endif %}>
-        {% if href %}
-          <a href="{{ href }}"{% if linkTitle %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
-        {% endif %}
-
-        {{ include('@Contao/picture_default.html.twig', picture, false) }}
-
-        {% if href %}
-          </a>
-        {% endif %}
-
-        {% if caption %}
-          <figcaption class="caption">{{ caption }}</figcaption>
-        {% endif %}
-      </figure>
+      {{ hero.heroFigure(picture, floatClass, margin, href, linkTitle, attributes, caption) }}
     {% endif %}
 
     {% if hasTextBlock %}
@@ -49,35 +54,24 @@
     {% endif %}
 
     {% if hasImageBelow %}
-      <figure class="hero__image{{ floatClass }}"{% if margin %} style="{{ margin }}"{% endif %}>
-        {% if href %}
-          <a href="{{ href }}"{% if linkTitle %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
-        {% endif %}
-
-        {{ include('@Contao/picture_default.html.twig', picture, false) }}
-
-        {% if href %}
-          </a>
-        {% endif %}
-
-        {% if caption %}
-          <figcaption class="caption">{{ caption }}</figcaption>
-        {% endif %}
-      </figure>
+      {{ hero.heroFigure(picture, floatClass, margin, href, linkTitle, attributes, caption) }}
     {% endif %}
   </div>
 
-  {% if hasBackground %}
-    <figure class="hero__background {{ isVideo ? 'hero__background--video' : 'hero__background--image' }}">
-      {% if addBackgroundVideo == null %}
-        {{ include('@Contao/picture_default.html.twig', heroBackground.picture, false) }}
-      {% else %}
-        <video{% if addBackgroundImage %} poster="{{ heroBackground.src }}"{% endif %} preload="auto" loop muted autoplay playsinline>
+  {% set hasBackgroundVideo = addBackgroundVideo and files is defined and files|length > 0 %}
+  {% set hasBackgroundImage = addBackgroundImage and heroBackground is defined %}
+
+  {% if hasBackgroundVideo or hasBackgroundImage %}
+    <div class="hero__background hero__background--{{ hasBackgroundVideo ? 'video' : 'image' }}" aria-hidden="true">
+      {% if hasBackgroundVideo %}
+        <video{% if hasBackgroundImage %} poster="{{ heroBackground.src }}"{% endif %} preload="auto" loop muted autoplay playsinline>
           {% for file in files %}
             <source type="{{ file.mime }}" src="{{ file.path }}">
           {% endfor %}
         </video>
+      {% else %}
+        {{ include('@Contao/picture_default.html.twig', heroBackground.picture, false) }}
       {% endif %}
-    </figure>
+    </div>
   {% endif %}
 </div>

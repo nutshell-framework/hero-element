@@ -17,6 +17,7 @@ use Contao\ContentElement;
 use Contao\File;
 use Contao\FilesModel;
 use Contao\Image;
+use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
 
@@ -32,7 +33,7 @@ class Hero extends ContentElement
     /**
      * Files object.
      *
-     * @var Collection|FilesModel
+     * @var Collection<FilesModel>|null
      */
     protected $objFiles;
 
@@ -46,7 +47,7 @@ class Hero extends ContentElement
         $source = StringUtil::deserialize($this->heroBackgroundVideo);
 
         if (!empty($source) || \is_array($source)) {
-            $objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, ['mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv', 'm4a', 'mp3', 'wma', 'mpeg', 'wav', 'ogg']);
+            $objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, ['mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv']);
 
             if (null !== $objFiles) {
                 $request = System::getContainer()->get('request_stack')->getCurrentRequest();
@@ -150,21 +151,11 @@ class Hero extends ContentElement
         }
 
         // VideoBackground
-        if ($this->heroBackgroundVideo) {
-            $objFiles = $this->objFiles;
-
-            /** @var FilesModel $objFirst */
-            $objFirst = $objFiles->current();
-
+        if ($this->heroBackgroundVideo && null !== $this->objFiles) {
             // Pre-sort the array by preference
-            if (\in_array($objFirst->extension, ['mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv'], true)) {
-                $this->Template->isVideo = true;
+            $arrFiles = ['webm' => null, 'mp4' => null, 'm4v' => null, 'mov' => null, 'wmv' => null, 'ogv' => null];
 
-                $arrFiles = ['webm' => null, 'mp4' => null, 'm4v' => null, 'mov' => null, 'wmv' => null, 'ogv' => null];
-            }
-
-            // Pass File objects to the template
-            foreach ($objFiles as $objFileModel) {
+            foreach ($this->objFiles as $objFileModel) {
                 $objFile = new File($objFileModel->path);
                 $arrFiles[$objFile->extension] = $objFile;
             }
