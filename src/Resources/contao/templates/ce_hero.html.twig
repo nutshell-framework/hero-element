@@ -58,15 +58,15 @@
     {% endif %}
   </div>
 
-  {% set hasBackgroundVideo = addBackgroundVideo and files is defined and files|length > 0 %}
+  {% set hasBackgroundVideo = addBackgroundVideo and videoSources is defined and videoSources|length > 0 %}
   {% set hasBackgroundImage = addBackgroundImage and heroBackground is defined %}
 
   {% if hasBackgroundVideo or hasBackgroundImage %}
     <div class="hero__background hero__background--{{ hasBackgroundVideo ? 'video' : 'image' }}" aria-hidden="true">
       {% if hasBackgroundVideo %}
         <video{% if hasBackgroundImage %} poster="{{ heroBackground.src }}"{% endif %} preload="auto" loop muted autoplay playsinline>
-          {% for file in files %}
-            <source type="{{ file.mime }}" src="{{ file.path }}">
+          {% for source in videoSources %}
+            <source type="{{ source.mime }}" src="{{ source.path }}">
           {% endfor %}
         </video>
       {% else %}

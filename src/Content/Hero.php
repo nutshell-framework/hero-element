@@ -152,18 +152,35 @@ class Hero extends ContentElement
 
         // VideoBackground
         if ($this->heroBackgroundVideo && null !== $this->objFiles) {
+            $this->Template->isVideo = true;
+
             // Pre-sort the array by preference
             $arrFiles = ['webm' => null, 'mp4' => null, 'm4v' => null, 'mov' => null, 'wmv' => null, 'ogv' => null];
+            $arrSources = $arrFiles;
+
+            $mimeMap = [
+                'webm' => 'video/webm',
+                'mp4'  => 'video/mp4',
+                'm4v'  => 'video/mp4',
+                'mov'  => 'video/quicktime',
+                'wmv'  => 'video/x-ms-wmv',
+                'ogv'  => 'video/ogg',
+            ];
 
             foreach ($this->objFiles as $objFileModel) {
                 $objFile = new File($objFileModel->path);
-                $arrFiles[$objFile->extension] = [
+                $arrFiles[$objFile->extension] = $objFile;
+                $arrSources[$objFile->extension] = [
                     'path' => $objFile->path,
-                    'mime' => $objFile->getMimeType(),
+                    'mime' => $mimeMap[$objFile->extension] ?? '',
                 ];
             }
 
+            // Legacy template data (BC for *.html5 templates)
             $this->Template->files = array_values(array_filter($arrFiles));
+
+            // Plain data for the Twig template (cannot read Contao\File magic properties)
+            $this->Template->videoSources = array_values(array_filter($arrSources));
         }
     }
 }
