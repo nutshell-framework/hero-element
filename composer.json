@@ -21,7 +21,7 @@
   },
   "require": {
     "php": ">=8.3",
-    "contao/core-bundle": "^5.0",
+    "contao/core-bundle": "^5.3",
     "symfony/http-kernel": "^5.0 || ^6.0 || ^7.0"
   },
   "require-dev": {

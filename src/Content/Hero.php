@@ -48,7 +48,7 @@ class Hero extends ContentElement
         $source = StringUtil::deserialize($this->heroBackgroundVideo);
 
         if (!empty($source) || \is_array($source)) {
-            $objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, ['mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv', 'm4a', 'mp3', 'wma', 'mpeg', 'wav', 'ogg']);
+            $objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, ['mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv']);
 
             if (null !== $objFiles) {
                 $request = System::getContainer()->get('request_stack')->getCurrentRequest();
@@ -58,7 +58,6 @@ class Hero extends ContentElement
                     $return = '<ul>';
 
                     while ($objFiles->next()) {
-                        /** @var FilesModel $objFiles */
                         $objFile = new File($objFiles->path);
                         $return .= '<li>'.Image::getHtml($objFile->icon, '', 'class="mime_icon"').' <span>'.$objFile->name.'</span> <span class="size">('.$this->getReadableSize($objFile->size).')</span></li>';
                     }
@@ -153,29 +152,36 @@ class Hero extends ContentElement
         }
 
         // VideoBackground
-        if ($this->heroBackgroundVideo) {
-            $objFiles = $this->objFiles;
-            $arrFiles = [];
+        if ($this->heroBackgroundVideo && null !== $this->objFiles) {
+            $this->Template->isVideo = true;
 
-            if (null !== $objFiles) {
-                /** @var FilesModel $objFirst */
-                $objFirst = $objFiles->current();
+            // Pre-sort the array by preference
+            $arrFiles = ['webm' => null, 'mp4' => null, 'm4v' => null, 'mov' => null, 'wmv' => null, 'ogv' => null];
+            $arrSources = $arrFiles;
 
-                // Pre-sort the array by preference
-                if (\in_array($objFirst->extension, ['mp4', 'm4v', 'mov', 'wmv', 'webm', 'ogv'], true)) {
-                    $this->Template->isVideo = true;
+            $mimeMap = [
+                'webm' => 'video/webm',
+                'mp4'  => 'video/mp4',
+                'm4v'  => 'video/mp4',
+                'mov'  => 'video/quicktime',
+                'wmv'  => 'video/x-ms-wmv',
+                'ogv'  => 'video/ogg',
+            ];
 
-                    $arrFiles = ['webm' => null, 'mp4' => null, 'm4v' => null, 'mov' => null, 'wmv' => null, 'ogv' => null];
-                }
-
-                // Pass File objects to the template
-                foreach ($objFiles as $objFileModel) {
-                    $objFile = new File($objFileModel->path);
-                    $arrFiles[$objFile->extension] = $objFile;
-                }
-
-                $this->Template->files = array_values(array_filter($arrFiles));
+            foreach ($this->objFiles as $objFileModel) {
+                $objFile = new File($objFileModel->path);
+                $arrFiles[$objFile->extension] = $objFile;
+                $arrSources[$objFile->extension] = [
+                    'path' => $objFile->path,
+                    'mime' => $mimeMap[$objFile->extension] ?? '',
+                ];
             }
+
+            // Legacy template data (BC for *.html5 templates)
+            $this->Template->files = array_values(array_filter($arrFiles));
+
+            // Plain data for the Twig template (cannot read Contao\File magic properties)
+            $this->Template->videoSources = array_values(array_filter($arrSources));
         }
     }
 }

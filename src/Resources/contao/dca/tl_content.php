@@ -61,7 +61,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['heroBackgroundImage'] = [
 $GLOBALS['TL_DCA']['tl_content']['fields']['heroBackgroundVideo'] = [
     'exclude' => true,
     'inputType' => 'fileTree',
-    'eval' => ['filesOnly' => true, 'fieldType' => 'checkbox', 'multiple' => true, 'mandatory' => false, 'tl_class' => 'clr'],
+    'eval' => ['filesOnly' => true, 'fieldType' => 'checkbox', 'multiple' => true, 'mandatory' => false, 'extensions' => 'mp4,m4v,mov,wmv,webm,ogv', 'tl_class' => 'clr'],
     'sql' => 'blob NULL',
 ];
 

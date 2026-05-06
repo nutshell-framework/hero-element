@@ -1,0 +1,77 @@
+{% set hasImage      = addImage and picture is defined %}
+{% set hasImageAbove = hasImage and floating != 'below' %}
+{% set hasImageBelow = hasImage and floating == 'below' %}
+{% set hasTextBlock  = addText or headline %}
+{% set hasLinks      = urlPrimary or urlSecondary %}
+{% macro heroFigure(picture, floatClass, margin, href, linkTitle, attributes, caption) %}
+  <figure class="hero__image{{ floatClass }}"{% if margin %} style="{{ margin }}"{% endif %}>
+    {% if href %}
+      <a href="{{ href }}"{% if linkTitle %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
+    {% endif %}
+
+    {{ include('@Contao/picture_default.html.twig', picture, false) }}
+
+    {% if href %}
+      </a>
+    {% endif %}
+
+    {% if caption %}
+      <figcaption class="caption">{{ caption }}</figcaption>
+    {% endif %}
+  </figure>
+{% endmacro %}
+
+{% import _self as hero %}
+
+<div class="{{ class }} block"{{ cssID|raw }}{% if style %} style="{{ style }}"{% endif %}>
+  <div class="hero__content">
+    {% if hasImageAbove %}
+      {{ hero.heroFigure(picture, floatClass, margin, href, linkTitle, attributes, caption) }}
+    {% endif %}
+
+    {% if hasTextBlock %}
+      <div class="hero__text">
+        {% if headline %}
+          <{{ hl }} class="hero__headline">{{ headline }}</{{ hl }}>
+        {% endif %}
+
+        {% if addText %}
+          <div class="hero__description">{{ text|default|sanitize_html('contao')|csp_inline_styles|insert_tag_raw }}</div>
+        {% endif %}
+
+        {% if hasLinks %}
+          <div class="hero__links">
+            {% if urlPrimary %}
+              <a href="{{ urlPrimary }}" class="{{ linkClassPrimary }}" title="{{ titleTextPrimary }}"{{ targetPrimary|raw }}{{ relPrimary|raw }}>{{ linkTitlePrimary }}</a>
+            {% endif %}
+
+            {% if urlSecondary %}
+              <a href="{{ urlSecondary }}" class="{{ linkClassSecondary }}" title="{{ titleTextSecondary }}"{{ targetSecondary|raw }}{{ relSecondary|raw }}>{{ linkTitleSecondary }}</a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if hasImageBelow %}
+      {{ hero.heroFigure(picture, floatClass, margin, href, linkTitle, attributes, caption) }}
+    {% endif %}
+  </div>
+
+  {% set hasBackgroundVideo = addBackgroundVideo and videoSources is defined and videoSources|length > 0 %}
+  {% set hasBackgroundImage = addBackgroundImage and heroBackground is defined %}
+
+  {% if hasBackgroundVideo or hasBackgroundImage %}
+    <div class="hero__background hero__background--{{ hasBackgroundVideo ? 'video' : 'image' }}" aria-hidden="true">
+      {% if hasBackgroundVideo %}
+        <video{% if hasBackgroundImage %} poster="{{ heroBackground.src }}"{% endif %} preload="auto" loop muted autoplay playsinline>
+          {% for source in videoSources %}
+            <source type="{{ source.mime }}" src="{{ source.path }}">
+          {% endfor %}
+        </video>
+      {% else %}
+        {{ include('@Contao/picture_default.html.twig', heroBackground.picture, false) }}
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
