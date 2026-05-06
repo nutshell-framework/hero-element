@@ -36,7 +36,7 @@
         {% endif %}
 
         {% if addText %}
-          <div class="hero__description">{{ text|raw }}</div>
+          <div class="hero__description">{{ text|default|sanitize_html('contao')|csp_inline_styles|insert_tag_raw }}</div>
         {% endif %}
 
         {% if hasLinks %}
