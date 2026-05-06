@@ -157,7 +157,10 @@ class Hero extends ContentElement
 
             foreach ($this->objFiles as $objFileModel) {
                 $objFile = new File($objFileModel->path);
-                $arrFiles[$objFile->extension] = $objFile;
+                $arrFiles[$objFile->extension] = [
+                    'path' => $objFile->path,
+                    'mime' => $objFile->getMimeType(),
+                ];
             }
 
             $this->Template->files = array_values(array_filter($arrFiles));
