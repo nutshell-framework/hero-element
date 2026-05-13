@@ -3,8 +3,8 @@
 {% set hasImageBelow = hasImage and floating == 'below' %}
 {% set hasTextBlock  = addText or headline %}
 {% set hasLinks      = urlPrimary or urlSecondary %}
-{% macro heroFigure(picture, floatClass, margin, href, linkTitle, attributes, caption) %}
-  <figure class="hero__image{{ floatClass }}"{% if margin %} style="{{ margin }}"{% endif %}>
+{% macro heroFigure(picture, floatClass, href, linkTitle, attributes, caption) %}
+  <figure class="hero__image{{ floatClass }}">
     {% if href %}
       <a href="{{ href }}"{% if linkTitle %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
     {% endif %}
@@ -26,7 +26,7 @@
 <div class="{{ class }} block"{{ cssID|raw }}{% if style %} style="{{ style }}"{% endif %}>
   <div class="hero__content">
     {% if hasImageAbove %}
-      {{ hero.heroFigure(picture, floatClass, margin, href, linkTitle, attributes, caption) }}
+      {{ hero.heroFigure(picture, floatClass ?? '', href ?? '', linkTitle ?? '', attributes ?? '', caption ?? '') }}
     {% endif %}
 
     {% if hasTextBlock %}
@@ -54,7 +54,7 @@
     {% endif %}
 
     {% if hasImageBelow %}
-      {{ hero.heroFigure(picture, floatClass, margin, href, linkTitle, attributes, caption) }}
+      {{ hero.heroFigure(picture, floatClass ?? '', href ?? '', linkTitle ?? '', attributes ?? '', caption ?? '') }}
     {% endif %}
   </div>
 
