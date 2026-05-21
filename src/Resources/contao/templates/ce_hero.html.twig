@@ -36,17 +36,17 @@
         {% endif %}
 
         {% if addText %}
-          <div class="hero__description">{{ text|raw }}</div>
+          <div class="hero__description">{{ text|insert_tag_raw }}</div>
         {% endif %}
 
         {% if hasLinks %}
           <div class="hero__links">
             {% if urlPrimary %}
-              <a href="{{ urlPrimary }}" class="{{ linkClassPrimary }}" title="{{ titleTextPrimary }}"{{ targetPrimary|raw }}{{ relPrimary|raw }}>{{ linkTitlePrimary }}</a>
+              <a href="{{ urlPrimary|insert_tag }}" class="{{ linkClassPrimary }}" title="{{ titleTextPrimary }}"{{ targetPrimary|raw }}{{ relPrimary|raw }}>{{ linkTitlePrimary|insert_tag }}</a>
             {% endif %}
 
             {% if urlSecondary %}
-              <a href="{{ urlSecondary }}" class="{{ linkClassSecondary }}" title="{{ titleTextSecondary }}"{{ targetSecondary|raw }}{{ relSecondary|raw }}>{{ linkTitleSecondary }}</a>
+              <a href="{{ urlSecondary|insert_tag }}" class="{{ linkClassSecondary }}" title="{{ titleTextSecondary }}"{{ targetSecondary|raw }}{{ relSecondary|raw }}>{{ linkTitleSecondary|insert_tag }}</a>
             {% endif %}
           </div>
         {% endif %}
